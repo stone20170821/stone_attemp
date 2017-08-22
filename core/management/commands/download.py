@@ -1,6 +1,9 @@
 #! encoding:utf-8
 from django.core.management import BaseCommand
 from argparse import ArgumentParser
+from conn_utils import write_dataframe_to_sql
+import tushare
+from pandas import DataFrame
 
 
 class Command(BaseCommand):
@@ -20,4 +23,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['get_stock_basics']:
-            print True
+            self.handle_get_stock_basices()
+
+    def handle_get_stock_basices(self):
+        """处理股票列表"""
+        print self.handle_get_stock_basices.__doc__
+        df = tushare.get_stock_basics()
+        """:type : DataFrame"""
+        write_dataframe_to_sql(df, 'core_horsebasictemp')
