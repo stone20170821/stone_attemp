@@ -1,9 +1,10 @@
 #! encoding:utf-8
 from django.core.management import BaseCommand
 from argparse import ArgumentParser
-from conn_utils import write_dataframe_to_sql
+from conn_utils import write_dataframe_to_sql, backup_table_to_table, clean_table
 import tushare
 from pandas import DataFrame
+from core.models import HorseBasic, HorseBasicBackup, TableName
 
 
 class Command(BaseCommand):
@@ -30,4 +31,6 @@ class Command(BaseCommand):
         print self.handle_get_stock_basices.__doc__
         df = tushare.get_stock_basics()
         """:type : DataFrame"""
-        write_dataframe_to_sql(df, 'core_horsebasictemp')
+        backup_table_to_table(TableName.horse_basic, TableName.horse_basic_backup)
+        clean_table(HorseBasic)
+        write_dataframe_to_sql(df, TableName.horse_basic)
